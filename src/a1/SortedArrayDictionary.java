@@ -1,6 +1,6 @@
 package a1;
 
-public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
+public class SortedArrayDictionary <K,V> implements Dictionary<K,V>{
 	
 	private KeyValuePair<K,V> Data[];
 	private int size;
@@ -21,9 +21,9 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 		
 		while (re >= li) {
 			int m = (li + re)/2;
-			if (key.compareTo(Data[m].getKey()) < 0)
+			if (Compare(key,Data[m].getKey()) < 0)
 			re = m - 1;
-			else if (key.compareTo(Data[m].getKey()) > 0)
+			else if (Compare(key,Data[m].getKey()) > 0)
 			li= m + 1;
 			else
 			return m; // key gefunden
@@ -32,7 +32,7 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 
 	}
 	
-	public V Search(K Key){
+	public V search(K Key){
 		V Value = null;
 		
 		int pos = SearchKey(Key);
@@ -44,7 +44,7 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public V Insert(K Key, V Value)	{
+	public V insert(K Key, V Value)	{
 		int Position = SearchKey(Key);
 		
 		if(Position != -1)
@@ -84,6 +84,44 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 		return null;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private int Compare(K k1, K k2)
+	{
+		Object o1 = k1;
+		Object o2 = k2;
+		
+		if(o1.getClass().isAssignableFrom(Comparable.class))
+		{
+			Comparable c1 = (Comparable) o1;
+			Comparable c2 = (Comparable) o2;
+			return c1.compareTo(c2);
+		}
+		else
+		{
+			return o1.toString().compareTo(o2.toString());
+		}
+	}
+	
+	public V remove(K key)
+	{
+		int position = SearchKey(key);
+		V oldVal = null;
+		
+		if(position != -1)
+		{
+			oldVal = Data[position].getValue();
+			Data[position] = null;
+			elements--;
+			for(int i = position;i<elements;i++)
+			{	
+				Data[i] = Data[i+1];
+				Data[i+1] = null;
+			}
+			
+		}
+		return oldVal;
+	}
+	
 	private int getInsertPosition(K key)
 	{
 		if(elements == 0)
@@ -95,15 +133,15 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 		
 		while (re >= li) {
 			m = (li + re)/2;
-			if (key.compareTo(Data[m].getKey()) < 0)
+			if (Compare(key,Data[m].getKey()) < 0)
 			re = m - 1;
-			else if (key.compareTo(Data[m].getKey()) > 0)
+			else if (Compare(key,Data[m].getKey()) > 0)
 			li= m + 1;
 			else
 			return m; // key gefunden
 			}
 		
-		if (key.compareTo(Data[m].getKey()) > 0)
+		if (Compare(key,Data[m].getKey()) > 0)
 			m++;
 		
 		return m;

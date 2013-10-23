@@ -9,17 +9,19 @@ import java.awt.event.ItemListener;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class Gui extends JFrame implements ActionListener,ItemListener{
+public class Gui<K,V> extends JFrame implements ActionListener,ItemListener{
 
 	JRadioButtonMenuItem rbMnuItmSortedDictionary;
 	JRadioButtonMenuItem rbMnuItmHashDictionary;
 	JRadioButtonMenuItem rbMnuItmTreeDictionary;
-	JRadioButtonMenuItem rbMnuItmMapDictionary;
+	
+	JRadioButtonMenuItem rbMnuItmMapDictionaryTree;
+	JRadioButtonMenuItem rbMnuItmMapDictionaryHash;
 	
 	@SuppressWarnings("unused")
-	private Dictionary<String,String> myDictionary;
+	private Dictionary<K,V> myDictionary;
 	
- 	public Gui()
+	public Gui()
 	{
 		super();
 		setSize(500,500);
@@ -31,6 +33,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		/*MenuBar einrichten*/
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Einstellungen");
+		JMenu dictMapMenu = new JMenu("DictionaryMap");
 				
 		
 		//buttonGruppe Dictionarys
@@ -52,23 +55,23 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		group.add(rbMnuItmTreeDictionary);
 		menu.add(rbMnuItmTreeDictionary);
 		
-		rbMnuItmMapDictionary = new JRadioButtonMenuItem("MapDictionary");
-		rbMnuItmMapDictionary.addActionListener(this);
-		group.add(rbMnuItmMapDictionary);
-		menu.add(rbMnuItmMapDictionary);
+		menu.add(dictMapMenu);
+		
+		rbMnuItmMapDictionaryTree = new JRadioButtonMenuItem("MapDictionaryTree");
+		rbMnuItmMapDictionaryTree.addActionListener(this);
+		group.add(rbMnuItmMapDictionaryTree);
+		dictMapMenu.add(rbMnuItmMapDictionaryTree);
+		
+		rbMnuItmMapDictionaryHash = new JRadioButtonMenuItem("MapDictionaryHash");
+		rbMnuItmMapDictionaryHash.addActionListener(this);
+		group.add(rbMnuItmMapDictionaryHash);
+		dictMapMenu.add(rbMnuItmMapDictionaryHash);
 		
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
 		
 		add(pnl);
 		
-	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Gui();
 	}
 	
 	@Override
@@ -80,7 +83,36 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		Dictionary<K,V> newDict = null;
+		
+		if(arg0.getSource() == rbMnuItmHashDictionary)
+		{
+			
+		}
+		else if(arg0.getSource() == rbMnuItmMapDictionaryHash)
+		{
+			newDict = new MapDictionary<K, V>(new java.util.HashMap<K, V>());
+		}
+		else if(arg0.getSource() == rbMnuItmMapDictionaryTree)
+		{
+			newDict = new MapDictionary<K, V>(new java.util.TreeMap<K, V>());
+		}
+		else if(arg0.getSource() == rbMnuItmSortedDictionary)
+		{
+			newDict = (Dictionary<K, V>) new SortedArrayDictionary<K,V>();
+		}
+		else if(arg0.getSource() == rbMnuItmTreeDictionary)
+		{
+			
+		}
+		
+		if(newDict != null)
+		{
+			//foreach()
+		}
+			
 		System.out.println("Action performed: " + arg0 );
 	}
-
+	
+	
 }

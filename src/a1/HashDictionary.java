@@ -1,6 +1,6 @@
 package a1;
 
-public class HashDictionary<K, V> implements Dictionary<K, V> {
+public class HashDictionary<K,V> implements Dictionary<K, V> {
 
 	public V insert(K key, V value){return null;}
     // Associates the specified value with the specified key in this map.
