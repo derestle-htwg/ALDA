@@ -20,4 +20,8 @@ public class KeyValuePair<K,V> {
 		return Value;
 	}
 
+	@Override
+	public String toString() {
+		return "<" + Key.toString() + ";" + Value.toString() + ">";
+	}
 }
