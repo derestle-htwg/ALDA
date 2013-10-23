@@ -42,6 +42,7 @@ public class SortedArrayDictionary <K extends Comparable<? super K>,V>{
 	}
 	
 	public V Insert(K Key, V Value)	{
+		int Position = SearchKey(Key);
 		
 		return null;
 	}
