@@ -7,8 +7,9 @@ public class test {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Gui<Integer,Integer> myGui = new Gui<Integer,Integer>();
+		Gui myGui = new Gui();
 		myGui.setEnabled(true);
+		
 	}
 
 }
