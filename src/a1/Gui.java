@@ -33,6 +33,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	JLabel lblEnglishResult;
 	JButton btnInsert;
 	JButton btnSearch;
+	JButton btnRemove;
 	
 	private Dictionary<String,String> myDictionary;
 	
@@ -47,7 +48,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		initControls();
 		
 		
-		setSize(500,500);
+		setSize(780,300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		
@@ -62,6 +63,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		lblEnglish = new JLabel("Englisch: ");
 		btnInsert = new JButton("Hinzufügen");
 		btnSearch = new JButton("Suchen");
+		btnRemove = new JButton("Entfernen");
 		
 		lblGermanResult = new JLabel("");
 		lblEnglishResult = new JLabel("");
@@ -72,6 +74,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		pnl.add(txtEnglish);
 		pnl.add(btnInsert);
 		pnl.add(btnSearch);
+		pnl.add(btnRemove);
 		pnl.add(lblGermanResult);
 		pnl.add(lblEnglishResult);
 		
@@ -79,23 +82,27 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		lblEnglish.setLocation(12,42);
 		txtGerman.setLocation(100,12);
 		txtEnglish.setLocation(100,42);
-		lblGermanResult.setLocation(12,120);
-		lblEnglishResult.setLocation(100,120);
+		lblGermanResult.setLocation(320,12);
+		lblEnglishResult.setLocation(320,42);
 		
 		lblGerman.setSize(80, 22);
 		lblEnglish.setSize(80, 22);
-		txtGerman.setSize(280, 22);
-		txtEnglish.setSize(280, 22);
-		lblGermanResult.setSize(80, 22);
-		lblEnglishResult.setSize(80, 22);
+		txtGerman.setSize(200, 22);
+		txtEnglish.setSize(200, 22);
+		lblGermanResult.setSize(280, 22);
+		lblEnglishResult.setSize(280, 22);
 		
-		btnInsert.setLocation(60,72);
+		btnInsert.setLocation(10,72);
 		btnInsert.setSize(150, 36);
 		btnInsert.addActionListener(this);
 		
-		btnSearch.setLocation(230,72);
+		btnSearch.setLocation(180,72);
 		btnSearch.setSize(150, 36);
 		btnSearch.addActionListener(this);
+		
+		btnRemove.setLocation(350,72);
+		btnRemove.setSize(150, 36);
+		btnRemove.addActionListener(this);
 		
 		this.add(pnl);	
 	}
@@ -191,12 +198,27 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		else if(arg0.getSource() == btnSearch)
 		{
 			String Result = myDictionary.search(txtGerman.getText());
+			
+			if(Result == null){
+				lblGermanResult.setText("");
+				lblEnglishResult.setText("");
+			}
+			else
+			{
+				lblGermanResult.setText(txtGerman.getText());
+				lblEnglishResult.setText(Result);
+			}
+		}
+		else if(arg0.getSource() == btnRemove)
+		{
+			String Result = myDictionary.remove(txtGerman.getText());
 			lblGermanResult.setText(txtGerman.getText());
 			if(Result == null)
-				lblEnglishResult.setText("");
+				lblEnglishResult.setText("Eintrag konnte nicht gefunden werden");
 			else
-				lblEnglishResult.setText(Result);
+				lblEnglishResult.setText("Eintrag wurde entfernt");
 		}
+		
 	}
 	
 	private void loadFile()
