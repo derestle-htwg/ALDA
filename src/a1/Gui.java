@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -21,6 +23,8 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	
 	JRadioButtonMenuItem rbMnuItmMapDictionaryTree;
 	JRadioButtonMenuItem rbMnuItmMapDictionaryHash;
+	
+	JMenuItem menuPerformance;
 	JMenuItem menuFileLoad; 
 	
 	JFileChooser fc = new JFileChooser();
@@ -115,9 +119,12 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		JMenu dictMapMenu = new JMenu("DictionaryMap");
 		JMenu menuFile = new JMenu("Datei");
 		
-		
 		menuFileLoad = new JMenuItem("Datei laden");
 		menuFileLoad.addActionListener(this);
+		
+		menuPerformance = new JMenuItem("Performance Messungen");
+		menuPerformance.addActionListener(this);
+		menuSettings.add(menuPerformance);
 		
 		//buttonGruppe Dictionarys
 		ButtonGroup group = new ButtonGroup();
@@ -218,6 +225,11 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 			else
 				lblEnglishResult.setText("Eintrag wurde entfernt");
 		}
+		else if(arg0.getSource() == menuPerformance)
+		{
+			performanceTest();
+		}
+
 		
 	}
 	
@@ -267,6 +279,92 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
         }
         //System.out.println(myDictionary.toString());
 	}
-	
+	//performance
+	private void performanceTest()
+	{
+		java.util.HashMap<String, String> temp = new HashMap<>();
+		int Elements = 0;
+		int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            //This is where a real application would open the file.
+            Scanner s = null;
+
+            try {
+                s = new Scanner( new BufferedReader(new FileReader(file)));
+                try
+            	{
+	                while (s.hasNext()) {
+	                	String line = s.nextLine();
+	                	if(line != null)
+	                	{
+	                		if(line.split("\\s").length > 1)
+	                		{
+			                	String key = line.split("\\s")[0];
+			                	String value = line.split("\\s")[1];
+			                	temp.put(key, value);
+		                	}
+	                		else
+	                			break;
+	                	}
+	                	Elements++;
+	                	if(Elements%100 == 0)
+	                		this.setTitle("Elemente: " + Elements);
+	                }
+            	}
+                catch(Exception e){}//Dateiende oder Dateifehler -> aufhören
+                
+            } catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
+        }
+        
+        String[] performanceTestDataA = new String[temp.size()];
+        String[] performanceTestDataB = new String[temp.size()];
+        int i = 0;
+        int size;
+        for(Entry<String,String> a : temp.entrySet())
+        {
+        	performanceTestDataA[i] = a.getValue();
+        	performanceTestDataB[i] = a.getKey();
+        	i++;
+        }
+        size = i;
+        for(i = 0;i<1000000;i++);
+        long time = System.nanoTime();
+        long time2 = System.nanoTime();
+        long TimeCallDelay = time2-time;
+        System.out.println("TimeCallDelay: " + TimeCallDelay);
+        time = System.nanoTime();
+        for(i=0;i<size;i++)
+        {
+        	myDictionary.insert(performanceTestDataA[i], performanceTestDataB[i]);
+        }
+        time2 = System.nanoTime();
+        System.out.println("Einfügen: " + (time2-time-TimeCallDelay));
+        time = System.nanoTime();
+        for(i=0;i<size;i++)
+        {
+        	myDictionary.search(performanceTestDataA[i]);
+        }
+        time2 = System.nanoTime();
+        System.out.println("Suchen: " + (time2-time-TimeCallDelay));
+        time = System.nanoTime();
+        for(i=0;i<size;i++)
+        {
+        	myDictionary.remove(performanceTestDataA[i]);
+        }
+        time2 = System.nanoTime();
+        System.out.println("entfernen: " + (time2-time-TimeCallDelay));
+        
+        
+        
+	}
 	
 }
