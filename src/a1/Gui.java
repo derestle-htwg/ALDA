@@ -29,7 +29,10 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	JTextField txtEnglish;
 	JLabel lblGerman;
 	JLabel lblEnglish;
+	JLabel lblGermanResult;
+	JLabel lblEnglishResult;
 	JButton btnInsert;
+	JButton btnSearch;
 	
 	private Dictionary<String,String> myDictionary;
 	
@@ -58,26 +61,41 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		lblGerman = new JLabel("Deutsch: ");
 		lblEnglish = new JLabel("Englisch: ");
 		btnInsert = new JButton("Hinzufügen");
+		btnSearch = new JButton("Suchen");
+		
+		lblGermanResult = new JLabel("");
+		lblEnglishResult = new JLabel("");
 		
 		pnl.add(lblGerman);
 		pnl.add(txtGerman);
 		pnl.add(lblEnglish);
 		pnl.add(txtEnglish);
 		pnl.add(btnInsert);
+		pnl.add(btnSearch);
+		pnl.add(lblGermanResult);
+		pnl.add(lblEnglishResult);
 		
 		lblGerman.setLocation(12,12);
-		txtGerman.setLocation(100,12);
 		lblEnglish.setLocation(12,42);
+		txtGerman.setLocation(100,12);
 		txtEnglish.setLocation(100,42);
+		lblGermanResult.setLocation(12,120);
+		lblEnglishResult.setLocation(100,120);
 		
 		lblGerman.setSize(80, 22);
 		lblEnglish.setSize(80, 22);
 		txtGerman.setSize(280, 22);
 		txtEnglish.setSize(280, 22);
+		lblGermanResult.setSize(80, 22);
+		lblEnglishResult.setSize(80, 22);
 		
 		btnInsert.setLocation(60,72);
 		btnInsert.setSize(150, 36);
 		btnInsert.addActionListener(this);
+		
+		btnSearch.setLocation(230,72);
+		btnSearch.setSize(150, 36);
+		btnSearch.addActionListener(this);
 		
 		this.add(pnl);	
 	}
@@ -169,6 +187,15 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		else if(arg0.getSource() == btnInsert)
 		{
 			myDictionary.insert(txtGerman.getText(), txtEnglish.getText());
+		}
+		else if(arg0.getSource() == btnSearch)
+		{
+			String Result = myDictionary.search(txtGerman.getText());
+			lblGermanResult.setText(txtGerman.getText());
+			if(Result == null)
+				lblEnglishResult.setText("");
+			else
+				lblEnglishResult.setText(Result);
 		}
 	}
 	
