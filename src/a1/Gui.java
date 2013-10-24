@@ -1,6 +1,5 @@
 package a1;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -26,7 +25,12 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	
 	JFileChooser fc = new JFileChooser();
 	
-	@SuppressWarnings("unused")
+	JTextField txtGerman;
+	JTextField txtEnglish;
+	JLabel lblGerman;
+	JLabel lblEnglish;
+	JButton btnInsert;
+	
 	private Dictionary<String,String> myDictionary;
 	
 	public Gui()
@@ -34,8 +38,52 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		super();
 		
 		myDictionary = new SortedArrayDictionary<String,String>(); 
-		JPanel pnl = new JPanel(new GridLayout(4,4));
 		
+		
+		initMenu();
+		initControls();
+		
+		
+		setSize(500,500);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+		
+	}
+	
+	public void initControls()
+	{
+		JPanel pnl = new JPanel(null);
+		txtGerman = new JTextField(20);
+		txtEnglish = new JTextField(20);
+		lblGerman = new JLabel("Deutsch: ");
+		lblEnglish = new JLabel("Englisch: ");
+		btnInsert = new JButton("Hinzufügen");
+		
+		pnl.add(lblGerman);
+		pnl.add(txtGerman);
+		pnl.add(lblEnglish);
+		pnl.add(txtEnglish);
+		pnl.add(btnInsert);
+		
+		lblGerman.setLocation(12,12);
+		txtGerman.setLocation(100,12);
+		lblEnglish.setLocation(12,42);
+		txtEnglish.setLocation(100,42);
+		
+		lblGerman.setSize(80, 22);
+		lblEnglish.setSize(80, 22);
+		txtGerman.setSize(280, 22);
+		txtEnglish.setSize(280, 22);
+		
+		btnInsert.setLocation(60,72);
+		btnInsert.setSize(150, 36);
+		btnInsert.addActionListener(this);
+		
+		this.add(pnl);	
+	}
+	
+	public void initMenu()
+	{
 		/*MenuBar einrichten*/
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuSettings = new JMenu("Einstellungen");
@@ -82,13 +130,6 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		
 		menuBar.add(menuSettings);
 		setJMenuBar(menuBar);
-		
-		add(pnl);
-		
-		setSize(500,500);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
-		
 	}
 	
 	@Override
@@ -125,10 +166,15 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		{
 			loadFile();
 		}
+		else if(arg0.getSource() == btnInsert)
+		{
+			myDictionary.insert(txtGerman.getText(), txtEnglish.getText());
+		}
 	}
 	
 	private void loadFile()
 	{
+		int Elements = 0;
 		int returnVal = fc.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -149,10 +195,14 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 			                	String key = line.split("\\s")[0];
 			                	String value = line.split("\\s")[1];
 			                	myDictionary.insert(key, value);
+			                	
 		                	}
 	                		else
 	                			break;
 	                	}
+	                	Elements++;
+	                	if(Elements%100 == 0)
+	                		this.setTitle("Elemente: " + Elements);
 	                }
             	}
                 catch(Exception e){}//Dateiende oder Dateifehler -> aufhören
@@ -166,7 +216,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
                 }
             }
         }
-        System.out.println(myDictionary.toString());
+        //System.out.println(myDictionary.toString());
 	}
 	
 	
