@@ -75,49 +75,108 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 			}
 			else
 			{
-			TreeNode actualNode = RootNode;
-			boolean parentNodeFound = false;;
-			while(!parentNodeFound)
-			{
-				int compVal = Compare(actualNode.Key, inNode.Key);
-			
-				if(compVal == 0)
-				{//ersetzen
-					inNode.Height = actualNode.Height;
-					inNode.Left = actualNode.Left;
-					inNode.Right = actualNode.Right;
-					inNode.Parent = actualNode.Parent;
-					if(inNode.Parent.Left == actualNode)
-					{
-						inNode.Parent.Left = inNode;
+				TreeNode actualNode = RootNode;
+				boolean parentNodeFound = false;;
+				while(!parentNodeFound)
+				{
+					int compVal = Compare(actualNode.Key, inNode.Key);
+				
+					if(compVal == 0)
+					{//ersetzen
+						inNode.Height = actualNode.Height;
+						inNode.Left = actualNode.Left;
+						inNode.Right = actualNode.Right;
+						inNode.Parent = actualNode.Parent;
+						if(inNode.Parent.Left == actualNode)
+						{
+							inNode.Parent.Left = inNode;
+						}
+						else
+						{
+							inNode.Parent.Right = inNode;
+						}
+					}
+					else if(compVal == -1)
+					{//inNode Grï¿½ï¿½er -> rechts weiter
+						if(actualNode.Right == null)
+						{//insert, reorganisieren
+							actualNode.Right = inNode;
+							inNode.Parent = actualNode;
+							reorganize(inNode);
+						}
+						else
+							actualNode = actualNode.Right;
 					}
 					else
-					{
-						inNode.Parent.Right = inNode;
+					{//inNode kleiner -> links Weiter
+						if(actualNode.Left == null)
+						{//insert, reorganisieren
+							actualNode.Left = inNode;
+							inNode.Parent = actualNode;
+							reorganize(inNode);
+						}
+						else
+							actualNode = actualNode.Left;
 					}
+				
 				}
-				else if(compVal == -1)
-				{//inNode Größer -> rechts weiter
-					if(actualNode.Right == null)
-					{//insert, reorganisieren
-						
-					}
-					else
-						actualNode = actualNode.Right;
-				}
-				else
-				{//inNode kleiner -> links Weiter
-					if(actualNode.Left == null)
-					{//insert, reorganisieren
-						
-					}
-					else
-						actualNode = actualNode.Left;
-				}
-			
 			}
 		}
 		return retVal;
+	}
+		
+	private void reorganize(TreeNode inNode)
+	{//wird nur bei Inserts oder Deletes aufgerufen.
+		TreeNode actNode = inNode;
+		int balance;
+		int height;
+		boolean change = true;
+		while(actNode != null && change)
+		{
+			change = false;
+			
+			balance = calcBalance(actNode);
+			if(balance == -2)
+			{//linkslastig
+				if(calcBalance(actNode.Left) == 1)
+				{//rechtslastig, Doppeldrehen
+					RotateL(actNode.Left);
+				}
+				RotateR(actNode);
+			}
+			else if (balance == 2)
+			{//rechtslastig
+				if(calcBalance(actNode.Right) == -1)
+				{//rechtslastig, Doppeldrehen
+					RotateR(actNode.Right);
+				}
+				RotateL(actNode);
+			}
+			
+			height = calcHeight(actNode);
+			if(actNode.Height != height)
+			{//hÃ¶he stimmt nicht mehr. Anpassen und weiter oben kontrollieren!
+				actNode.Height = height;
+				change = true;
+			}
+		}
+	}
+	
+	private int calcHeight(TreeNode inNode)
+	{
+		int heightR;
+		int heightL;
+		heightR = inNode.Right == null?0:inNode.Right.Height+1;
+		heightL = inNode.Left == null?0:inNode.Left.Height+1;
+		return heightR>heightL?heightR:heightL;
+	}
+	
+	private int calcBalance(TreeNode inNode)
+	{
+		int balance;
+		balance = inNode.Right == null?0:inNode.Right.Height+1;
+		balance -= inNode.Left == null?0:inNode.Left.Height+1;
+		return balance;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
