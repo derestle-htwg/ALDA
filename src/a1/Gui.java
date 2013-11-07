@@ -176,7 +176,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	
 		if(arg0.getSource() == rbMnuItmHashDictionary)
 		{
-			
+			myDictionary = new HashDictionary<String,String>();
 		}
 		else if(arg0.getSource() == rbMnuItmMapDictionaryHash)
 		{
@@ -192,7 +192,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 		}
 		else if(arg0.getSource() == rbMnuItmTreeDictionary)
 		{
-			
+			myDictionary = new TreeDictionary<String,String>();
 		}
 		else if(arg0.getSource() == menuFileLoad)
 		{

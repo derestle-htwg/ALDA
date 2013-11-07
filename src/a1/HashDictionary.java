@@ -12,6 +12,7 @@ public class HashDictionary<K,V> implements Dictionary<K, V> {
 		LLEntry<K,V> next;
 	}
 
+	private int Elements = 0;
 	private LLEntry<K,V>[] HashList;
 	
 	@SuppressWarnings("unchecked")
@@ -20,27 +21,35 @@ public class HashDictionary<K,V> implements Dictionary<K, V> {
 		HashList = new LLEntry[7];
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void resize(int newSize)
 	{
 		if(newSize <= 0)
 			return;
-		
+		Elements = 0;
+		System.out.println("Resize");
 		LLEntry<K,V>[] newList = new LLEntry[newSize];
 		for(int i = 0;i<HashList.length;i++)
 		{
+			int counter = 0;
 			LLEntry<K,V> transferEntry = HashList[i];
 			while(transferEntry != null)
 			{
 				insert(transferEntry.Element.getKey(),transferEntry.Element.getValue(),newList);
 				transferEntry = transferEntry.next;
+				counter++;
 			}
+			System.out.println(i + " \t" + counter);
 		}
 		
 		HashList = newList;
 	}
 	
 	private V insert(K key, V value, LLEntry<K, V>[] HashList){
+		
+		if(Elements > HashList.length*4)
+			resize(HashList.length*2);
+		
 		V oldValue = null;
 		int hash = key.hashCode();
 		KeyValuePair<K, V> newKVP = new KeyValuePair<K, V>(key, value);
@@ -66,8 +75,12 @@ public class HashDictionary<K,V> implements Dictionary<K, V> {
 				LLElem.Element = newKVP;
 			}
 			else//hinzufügen
+			{
 				LLElem.next = new LLEntry<K, V>(newKVP);
+			}
 		}
+		if(oldValue == null)
+			Elements++;
 		return oldValue;
 	}
 
@@ -126,6 +139,8 @@ public class HashDictionary<K,V> implements Dictionary<K, V> {
 				LLElem.next = LLElem.next.next;
 			}
     	}
+    	if(retVal != null)
+    		Elements--;
     	return retVal;
     }
     // Removes the key-vaue-pair associated with the key.
