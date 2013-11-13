@@ -1,11 +1,11 @@
 package a1;
 
-import sun.security.mscapi.KeyStore.ROOT;
-
 public class TreeDictionary<K, V> implements Dictionary<K, V> {
 	
 	private class TreeNode
 	{
+		public TreeNode(){}
+		public TreeNode(K inKey,V inData){Data = inData;Key = inKey;}
 		public K Key;
 		public V Data;
 		public int Height; 
@@ -179,6 +179,13 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		return balance;
 	}
 	
+	private TreeNode Search(K key)
+	{
+		TreeNode retVal = null;
+		
+		return retVal;
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private int Compare(K k1, K k2)
 	{
@@ -197,14 +204,18 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		}
 	}
 	
-	public V insert(K key, V value){return null;}
+	public V insert(K key, V value){
+		TreeNode retVal =InsertNode(new TreeNode(key,value)); 
+		return retVal == null?null:retVal.Data;}
     // Associates the specified value with the specified key in this map.
     // If the map previously contained a mapping for the key,
     // the old value is replaced by the specified value.
     // Returns the previous value associated with key,
     // or null if there was no mapping for key.
 
-	public V search(K key){return null;}
+	public V search(K key){
+		TreeNode retVal = Search(key);
+		return retVal == null?null:retVal.Data;}
     // Returns the value to which the specified key is mapped,
     // or null if this map contains no mapping for the key.
 
