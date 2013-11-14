@@ -282,7 +282,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
 	//performance
 	private void performanceTest()
 	{
-		java.util.HashMap<String, String> temp = new HashMap<>();
+		java.util.HashMap<String, String> temp = new HashMap<String, String>();
 		int Elements = 0;
 		int returnVal = fc.showOpenDialog(this);
 

@@ -12,27 +12,29 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		public TreeNode Left;
 		public TreeNode Right;
 		public TreeNode Parent;
+		public void replaceSubNode(TreeNode oldNode, TreeNode newNode)
+		{
+			if(Left == oldNode)
+				Left = newNode;
+			else
+				Right = newNode;
+			if(newNode != null)
+			{
+				newNode.Parent = this;
+			}
+		}
 	}
 	
-	TreeNode RootNode = null;
+	private TreeNode RootNode = null;
 	
 	private void RotateL(TreeNode inNode)
 	{
 		if(inNode.Right == null)
 			return;
 		
-		if(inNode.Parent != null)
-		{//Parent anpassen
-			if(inNode.Parent.Left == inNode)
-			{
-				inNode.Parent.Left = inNode.Right;
-			}
-			else
-			{
-				inNode.Parent.Right = inNode.Right;
-			}
-		}
-		inNode.Right.Parent = inNode.Parent;
+		if(inNode.Parent != null)//Parent anpassen
+			inNode.Parent.replaceSubNode(inNode, inNode.Right);
+		
 		inNode.Parent = inNode.Right;
 		inNode.Right = inNode.Parent.Left;
 		inNode.Parent.Left = inNode;		
@@ -43,18 +45,9 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		if(inNode.Left == null)
 			return;
 		
-		if(inNode.Parent != null)
-		{//Parent anpassen
-			if(inNode.Parent.Left == inNode)
-			{
-				inNode.Parent.Left = inNode.Left;
-			}
-			else
-			{
-				inNode.Parent.Right = inNode.Left;
-			}
-		}
-		inNode.Left.Parent = inNode.Parent;
+		if(inNode.Parent != null)//Parent anpassen
+			inNode.Parent.replaceSubNode(inNode, inNode.Left);
+		
 		inNode.Parent = inNode.Left;
 		inNode.Left = inNode.Parent.Right;
 		inNode.Parent.Right = inNode;		
@@ -85,24 +78,18 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 					{//ersetzen
 						inNode.Height = actualNode.Height;
 						inNode.Left = actualNode.Left;
-						inNode.Right = actualNode.Right;
-						inNode.Parent = actualNode.Parent;
-						if(inNode.Parent.Left == actualNode)
-						{
-							inNode.Parent.Left = inNode;
-						}
-						else
-						{
-							inNode.Parent.Right = inNode;
-						}
+						inNode.Right = actualNode.Right;					
+						actualNode.Parent.replaceSubNode(actualNode, inNode);
+						parentNodeFound = true;
 					}
-					else if(compVal == -1)
+					else if(compVal > 0)
 					{//inNode Gr��er -> rechts weiter
 						if(actualNode.Right == null)
 						{//insert, reorganisieren
 							actualNode.Right = inNode;
 							inNode.Parent = actualNode;
 							reorganize(inNode);
+							parentNodeFound = true;
 						}
 						else
 							actualNode = actualNode.Right;
@@ -114,6 +101,7 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 							actualNode.Left = inNode;
 							inNode.Parent = actualNode;
 							reorganize(inNode);
+							parentNodeFound = true;
 						}
 						else
 							actualNode = actualNode.Left;
@@ -179,10 +167,23 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		return balance;
 	}
 	
-	private TreeNode Search(K key)
+	private TreeNode SearchNode(K key)
 	{
-		TreeNode retVal = null;
-		
+		TreeNode retVal = RootNode;
+		while(retVal != null)
+		{
+			int compVal = Compare(retVal.Key,key); 
+			if(compVal == 0)
+				break;
+			else if(compVal > 0)
+			{//rechts weiter suchen
+				retVal = retVal.Right;
+			}
+			else
+			{//links weiter suchen
+				retVal = retVal.Left;
+			}
+		}
 		return retVal;
 	}
 	
@@ -204,6 +205,95 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 		}
 	}
 	
+	private TreeNode getLowest(TreeNode node)
+	{
+		TreeNode retVal = node;
+		while(retVal.Left != null)
+			retVal = retVal.Left;
+		return retVal;
+	}
+	
+	private TreeNode getHighest(TreeNode node)
+	{
+		TreeNode retVal = node;
+		while(retVal.Right != null)
+			retVal = retVal.Right;
+		return retVal;
+	}
+	
+	private TreeNode DeleteTreeNode(K key)
+	{
+		TreeNode retVal = SearchNode(key);
+		
+		if(retVal == null)
+			return null;
+		else if(retVal.Left == null && retVal.Right == null)
+		{//beide Subelemnte Null
+			if(retVal == RootNode)
+				RootNode = null;
+			else
+			{
+				retVal.Parent.replaceSubNode(retVal, null);
+				reorganize(retVal.Parent);
+			}
+		}
+		else if(retVal.Left != null && retVal.Right != null)
+		{//vom höheren subbaum ein Element klauen
+			TreeNode replacementNode = null;
+			TreeNode reorganizeNode = null;
+			//replacementNode suchen und ausschneiden
+			if(retVal.Left.Height > retVal.Right.Height)
+			{
+				replacementNode = getHighest(retVal.Left);
+				replacementNode.Parent.Right = replacementNode.Left;
+			}
+			else
+			{
+				replacementNode = getLowest(retVal.Right);
+				replacementNode.Parent.Left = replacementNode.Right;
+			}
+			reorganizeNode = replacementNode.Parent;
+			
+			//einsetzen/austauschen
+			if(retVal.Parent != null)
+				retVal.Parent.replaceSubNode(retVal, replacementNode);
+			replacementNode.Left = retVal.Left;
+			replacementNode.Right = retVal.Right;
+			//reorganisieren
+			//da anfangen wo node entfernt
+			reorganize(reorganizeNode);
+		}
+		else
+		{//nur ein subknoten --einfach anhängen und reorganisieren
+			if(retVal.Left != null)
+			{//linken Knoten anhängen
+				if(retVal == RootNode)
+				{
+					RootNode = RootNode.Left;
+					RootNode.Parent = null;
+				}
+				else
+				{
+					retVal.Parent.replaceSubNode(retVal, retVal.Left);
+				}
+			}
+			else
+			{
+				if(retVal == RootNode)
+				{
+					RootNode = RootNode.Right;
+					RootNode.Parent = null;
+				}
+				else
+				{
+					retVal.Parent.replaceSubNode(retVal, retVal.Right);
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
 	public V insert(K key, V value){
 		TreeNode retVal =InsertNode(new TreeNode(key,value)); 
 		return retVal == null?null:retVal.Data;}
@@ -214,12 +304,15 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
     // or null if there was no mapping for key.
 
 	public V search(K key){
-		TreeNode retVal = Search(key);
+		TreeNode retVal = SearchNode(key);
 		return retVal == null?null:retVal.Data;}
     // Returns the value to which the specified key is mapped,
     // or null if this map contains no mapping for the key.
 
-	public V remove(K key){return null;}
+	public V remove(K key){
+		TreeNode retVal = DeleteTreeNode(key);
+		
+		return retVal == null?null:retVal.Data;}
     // Removes the key-value-pair associated with the key.
     // Returns the value to which the key was previously associated,
     // or null if the key is not contained in the dictionary.
