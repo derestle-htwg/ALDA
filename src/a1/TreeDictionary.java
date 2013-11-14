@@ -146,6 +146,7 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 				actNode.Height = height;
 				change = true;
 			}
+			actNode = actNode.Parent;
 		}
 	}
 	
