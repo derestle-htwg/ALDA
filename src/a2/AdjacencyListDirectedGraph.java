@@ -3,6 +3,7 @@ package a2;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class AdjacencyListDirectedGraph<V> implements directedGraph<V> {
 
@@ -78,81 +79,131 @@ public class AdjacencyListDirectedGraph<V> implements directedGraph<V> {
 		
 		List<V> retVal = new LinkedList<V>();
 		
-		for(Entry<>)
+		for(Entry<V,Double> a : inAdjacencyList.get(v).entrySet())
+		{
+			if(!retVal.contains(a.getValue()))
+				retVal.add(a.getKey());
+		}
 		
 		return retVal;
 	}
 
 	@Override
 	public List<Edge<V>> getEdgeList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Edge<V>> retVal = new LinkedList<Edge<V>>();
+	
+		for(V key : inEdgeList.keySet())
+		{
+			for(Entry<V,Edge<V>> a : inEdgeList.get(key).entrySet())
+			{
+				if(!retVal.contains(a.getValue()))
+					retVal.add(a.getValue());
+			}
+		}
+		return retVal;
 	}
 
 	@Override
 	public List<Edge<V>> getIncidentEdgeList(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!outEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		
+		List<Edge<V>> retVal = new LinkedList<Edge<V>>();
+		
+		for(Entry<V,Edge<V>> a : outEdgeList.get(v).entrySet())
+		{
+			if(!retVal.contains(a.getValue()))
+				retVal.add(a.getValue());
+		}
+		
+		for(Entry<V,Edge<V>> a : inEdgeList.get(v).entrySet())
+		{
+			if(!retVal.contains(a.getValue()))
+				retVal.add(a.getValue());
+		}
+		return retVal;
 	}
 
 	@Override
 	public int getNumberOfEdges() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return getEdgeList().size();
 	}
 
 	@Override
 	public int getNumberOfVertexes() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return inEdgeList.keySet().size();
 	}
 
 	@Override
 	public List<V> getVertexList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<V> retVal = new LinkedList<V>(); 
+		retVal.addAll(inAdjacencyList.keySet());
+		return retVal;
 	}
 
 	@Override
 	public double getWeight(V v, V w) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		if(!outAdjacencyList.containsKey(v))
+			throw new Error("Vertex Source not found");
+		if(!inAdjacencyList.containsKey(w))
+			throw new Error("Vertex Target not found");
+		if(!inAdjacencyList.get(w).containsKey(v))
+			throw new Error("Edge not defined");
+		
+		return inAdjacencyList.get(w).get(v);
 	}
 
 	@Override
 	public List<Edge<V>> getIncomingEdgeList(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!inEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		List<Edge<V>> retVal = new LinkedList<Edge<V>>();
+		retVal.addAll(inEdgeList.get(v).values());
+		return retVal;
 	}
 
 	@Override
 	public int getInDegree(V v) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(!inEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		return inEdgeList.get(v).size();
 	}
 
 	@Override
 	public int getOutDegree(V v) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(!outEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		return outEdgeList.get(v).size();
 	}
 
 	@Override
 	public List<Edge<V>> getOutgoingEdgeList(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!outEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		List<Edge<V>> retVal = new LinkedList<Edge<V>>();
+		retVal.addAll(outEdgeList.get(v).values());
+		return retVal;
 	}
 
 	@Override
 	public List<V> getPredecessorVertexList(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!inEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		List<V> retVal = new LinkedList<V>();
+		retVal.addAll(inEdgeList.get(v).keySet());
+		return retVal;
 	}
 
 	@Override
 	public List<V> getSuccessorVertexList(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!outEdgeList.containsKey(v))
+			throw new Error("Vertex not found");
+		List<V> retVal = new LinkedList<V>();
+		retVal.addAll(outEdgeList.get(v).keySet());
+		return retVal;
 	}
 
 }
