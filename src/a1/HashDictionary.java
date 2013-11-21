@@ -21,7 +21,7 @@ public class HashDictionary<K,V> implements Dictionary<K, V> {
 		HashList = new LLEntry[7];
 	}
 	
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	private void resize(int newSize)
 	{
 		if(newSize <= 0)
