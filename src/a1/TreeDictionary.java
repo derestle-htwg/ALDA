@@ -4,7 +4,6 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 	
 	private class TreeNode
 	{
-		public TreeNode(){}
 		public TreeNode(K inKey,V inData){Data = inData;Key = inKey;}
 		public K Key;
 		public V Data;
@@ -147,6 +146,7 @@ public class TreeDictionary<K, V> implements Dictionary<K, V> {
 				actNode.Height = height;
 				change = true;
 			}
+			actNode = actNode.Parent;
 		}
 	}
 	

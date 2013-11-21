@@ -327,6 +327,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
         
         String[] performanceTestDataA = new String[temp.size()];
         String[] performanceTestDataB = new String[temp.size()];
+        
         int i = 0;
         int size;
         for(Entry<String,String> a : temp.entrySet())
@@ -336,7 +337,7 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
         	i++;
         }
         size = i;
-        for(i = 0;i<1000000;i++);
+        for(i = 0;i<1000000000;i++);
         long time = System.nanoTime();
         long time2 = System.nanoTime();
         long TimeCallDelay = time2-time;
@@ -354,14 +355,22 @@ public class Gui extends JFrame implements ActionListener,ItemListener{
         	myDictionary.search(performanceTestDataA[i]);
         }
         time2 = System.nanoTime();
-        System.out.println("Suchen: " + (time2-time-TimeCallDelay));
-        time = System.nanoTime();
+        System.out.println("Suchen erfolgreich: " + (time2-time-TimeCallDelay));
+        
+        //dafür sorgen, dass Datensaetze nicht auffindbar sind
         for(i=0;i<size;i++)
         {
-        	myDictionary.remove(performanceTestDataA[i]);
+        	while(myDictionary.search(performanceTestDataB[i]) != null)
+        		performanceTestDataB[i] += "_";
+        }
+        time = System.nanoTime();
+        
+        for(i=0;i<size;i++)
+        {
+        	myDictionary.search(performanceTestDataB[i]);//Datensaetze suchen die nicht existieren
         }
         time2 = System.nanoTime();
-        System.out.println("entfernen: " + (time2-time-TimeCallDelay));
+        System.out.println("suchen N.E.: " + (time2-time-TimeCallDelay));
         
         
         
