@@ -12,6 +12,5 @@ public interface Graph<V> {
 	int getNumberOfEdges();
 	int getNumberOfVertexes();
 	java.util.List<V> getVertexList();
-	double getWeight(V v, V w);
-	
+	double getWeight(V v, V w);	
 }
