@@ -79,10 +79,16 @@ public class AdjacencyListDirectedGraph<V> implements directedGraph<V> {
 		
 		List<V> retVal = new LinkedList<V>();
 		
-		for(Entry<V,Double> a : inAdjacencyList.get(v).entrySet())
+		for(V a : inAdjacencyList.get(v).keySet())
 		{
-			if(!retVal.contains(a.getValue()))
-				retVal.add(a.getKey());
+			if(!retVal.contains(a))
+				retVal.add(a);
+		}
+		
+		for(V a : outAdjacencyList.get(v).keySet())
+		{
+			if(!retVal.contains(a))
+				retVal.add(a);
 		}
 		
 		return retVal;
