@@ -2,6 +2,7 @@ package a1;
 
 public class HashDictionary<K,V> implements Dictionary<K, V> {
 	
+	@SuppressWarnings("hiding")
 	private class LLEntry<K,V>
 	{
 		public LLEntry(KeyValuePair<K, V> Data)
