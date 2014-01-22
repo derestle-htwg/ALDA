@@ -69,11 +69,11 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 		{
 			throw new Error("Vertex source not found!");
 		}
-		if(!adjacencyList.get(v).containsKey(w))
+		if(!adjacencyList.containsKey(w))
 		{
-			throw new Error("Vertex target not found!");
+			throw new Error("Vertex arget not found!");
 		}
-		return false;
+		return adjacencyList.get(v).containsKey(w);
 	}
 
 	@Override

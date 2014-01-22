@@ -20,7 +20,7 @@ public class Toolbar extends JPanel {
 	private JTextField statusField;
 	private JSlider speedSlider;
 	static final private int SPEED_MIN = 1;
-	static final private int SPEED_MAX = 10;
+	static final private int SPEED_MAX = 80;
 	static final private int SPEED_INIT = 5;
 	private ToolbarState curState;
 	
