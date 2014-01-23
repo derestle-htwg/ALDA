@@ -36,7 +36,7 @@ public class TelNet implements Comparator<TelVerbindung>{
 					pq.add(nv);
 			}
 		
-		while(u.size() > 1)
+		while(u.size() > 1 &&pq.size()>0)
 		{
 			TelVerbindung v = pq.remove();
 			if(u.getParent(v.a.id) != u.getParent(v.b.id))
